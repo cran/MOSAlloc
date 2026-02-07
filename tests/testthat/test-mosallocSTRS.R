@@ -38,7 +38,8 @@ test_that("mosallocSTRS() works as expected for a simple univariate problem", {
   expect_equal(sum(resWSS$n_opt), 50)
   expect_equal(c(ch %*% resWSS$n_opt), 100)
   expect_identical(resWSS$objectives[[1]] == c((Nh**2 / 10**2
-                   ) %*% (1 / resWSS$n_opt - 1 / Nh)), TRUE)
+                   ) %*% (1 / resWSS$n_opt) - (Nh**2 / 10**2
+                   ) %*% (1 / Nh)), TRUE)
   # Specify parameter for mosalloc (method = "WCM")
   opts <- list(sense = "max_precision",
                f = NULL, df = NULL, Hf = NULL,

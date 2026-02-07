@@ -7,8 +7,8 @@
 # Licensing: GPL-3.0-or-later
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com 
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com 
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 #
@@ -56,7 +56,7 @@
 #' @param listA (type: \code{list})
 #' A list of lists taking subpopulation- (domain/area) specific
 #' arguments. Elements are lists containing the following components
-#' which inturn correspond to one specific precision restriction:
+#' which in turn correspond to one specific precision restriction:
 #' \cr \code{..$stratum_id} (type: \code{numeric}) A vector containing the
 #' indices of the strata considered for the current restriction. The indices
 #' must coincide with the corresponding row numbers of \code{X_var} and
@@ -136,13 +136,13 @@
 #' @param X_fixed (type: \code{matrix})
 #' A matrix containing stratum- (rows) and type- (columns) specific
 #' cost coefficients associated with fixed cost. Default is \code{NULL}.
-#' Used soley in the case of cost minimization (\code{opt$sense == "min_cost"}).
+#' Used solely in the case of cost minimization (\code{opt$sense == "min_cost"}).
 #'
 #' @return A \code{mosaSTRS} object or a list of \code{mosaSTRS}
 #' objects. A \code{mosaSTRS} object is a list containing the
 #' following components:
 #' @returns \code{$sense}
-#' Sense of optimzation; \code{max precision} or \code{min_cost}.
+#' Sense of optimization; \code{max precision} or \code{min_cost}.
 #' @returns \code{$method}
 #' The method used, either weighted sum scalarization (WSS) or weighted
 #' Chebyshev minimization (WCM).

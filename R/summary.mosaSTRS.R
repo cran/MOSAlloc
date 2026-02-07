@@ -7,8 +7,8 @@
 # Licensing: GPL-3.0-or-later
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 #' @title Summary a mosaSTRS object
@@ -30,7 +30,7 @@
 #' containing the following components:
 #' @returns \code{$vname} Name of \code{object}.
 #' @returns \code{$sense}
-#' Sense of optimzation; \code{max precision} or \code{min_cost}.
+#' Sense of optimization; \code{max precision} or \code{min_cost}.
 #' @returns \code{$method}
 #' The method used weighted sum scalarization (WSS) or weighted Chebyshev
 #' minimization (WCM).

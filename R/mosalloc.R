@@ -7,8 +7,8 @@
 # Licensing: GPL-3.0-or-later
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com 
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com 
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 #
@@ -38,7 +38,7 @@
 #' @param A (type: \code{matrix})
 #' A matrix of precision units for precision constraints.
 #' @param a (type: \code{vector})
-#' The right-hand side vector ofthe precision constraints.
+#' The right-hand side vector of the precision constraints.
 #' @param C (type: \code{matrix})
 #' A matrix of cost coefficients for cost constraints
 #' @param c (type: \code{vector})
@@ -156,7 +156,7 @@
 #' * multivariate optimal allocation with weighted sum scalarization:
 #' \deqn{\min_{n, z, t}\{t: w^\top Dz-w^\top d\leq t, Az\leq a, Cn\leq c,
 #' 1\leq n_iz_i\, \forall i, l\leq n \leq u\}} where \eqn{w\in\mathbb{R}^{k_D}}
-#' is a strictly positive preference weighting (cf. Folks and Antel, 1965,
+#' is a strictly positive preference weighting (cf. Folks and Antle, 1965,
 #' and Rupp, 2018). Note that for this case the problem reduces to cost and
 #' precision constrained univariate optimal allocation. Solutions are ensured
 #' to be optimal in the Pareto sense.
@@ -240,7 +240,7 @@
 #' @returns \code{$n} The vector of optimal sample sizes.
 #' @returns \code{$J} The optimal objective vector.
 #' @returns \code{$Objective} The objective value with respect to decision
-#' funtional f. \code{NULL} if \code{opts$f = NULL}.
+#' functional f. \code{NULL} if \code{opts$f = NULL}.
 #' @returns \code{$Utopian} The component-wise univariate optimal
 #' objective vector. \code{NULL} if \code{opts$f = NULL}.
 #' @returns \code{$Normal} The vector normal to the Pareto frontier at
@@ -313,11 +313,11 @@
 #' D <- matrix(Sh.rev**2 * Nh**2, nrow = 1) # objective variance components
 #' d <- sum(Sh.rev**2 * Nh) # finite population correction
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL, df = NULL, Hf = NULL,
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = FALSE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL, df = NULL, Hf = NULL,
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = FALSE)
 #'
 #' sol <- mosalloc(D = D, d = d, A = A, a = a, C = C, c = c, l = l, u = u,
 #'                 opts = opts)
@@ -351,11 +351,11 @@
 #'
 #' d <- as.vector(D %*% (1 / Nh)) # finite population correction
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL, df = NULL, Hf = NULL,
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = FALSE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL, df = NULL, Hf = NULL,
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = FALSE)
 #'
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
@@ -386,11 +386,11 @@
 #'
 #' d <- as.vector(D %*% (1 / Nh))
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL, df = NULL, Hf = NULL,
-#'             init_w = w,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = FALSE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL, df = NULL, Hf = NULL,
+#'              init_w = w,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = FALSE)
 #'
 #' mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
@@ -418,11 +418,11 @@
 #'
 #' d <- as.vector(D %*% (1 / Nh))
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL, df = NULL, Hf = NULL,
-#'             init_w = w,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = FALSE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL, df = NULL, Hf = NULL,
+#'              init_w = w,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = FALSE)
 #'
 #' sols <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #' lapply(sols, function(sol){sol$Qbounds})
@@ -450,13 +450,13 @@
 #' wss <- c(1, 1, 0.5, 0.5) # preference weighting (weighted sum scalarization)
 #'
 #' Dw <- wss %*% D
-#' dw <- as.vector(wss %*% d)
+#' dw <- as.vector(Dw %*% (1 / Nh))
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL, df = NULL, Hf = NULL,
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 1000L, print_pm = FALSE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL, df = NULL, Hf = NULL,
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 1000L, print_pm = FALSE)
 #'
 #' # Solve weighted sum scalarization (WSS) via mosalloc
 #' sol_wss <- mosalloc(D = Dw, d = dw, C = C, c = c, l = l, u = u, opts = opts)
@@ -512,13 +512,13 @@
 #'
 #' # p-norm solution
 #' p <- 5 # p-norm
-#' opts = list(sense = "max_precision",
-#'             f = function(x) sum(x**p),
-#'             df = function(x) p * x**(p - 1),
-#'             Hf = function(x) diag(p * (p - 1) * x**(p - 2)),
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 1000L, print_pm = TRUE)
+#' opts <- list(sense = "max_precision",
+#'              f = function(x) sum(x**p),
+#'              df = function(x) p * x**(p - 1),
+#'              Hf = function(x) diag(p * (p - 1) * x**(p - 2)),
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 1000L, print_pm = TRUE)
 #'
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
@@ -546,13 +546,13 @@
 #'
 #' # p-norm solution
 #' p <- 5 # p-norm
-#' opts = list(sense = "max_precision",
-#'             f = function(x) sum(x**p),
-#'             df = function(x) p * x**(p - 1),
-#'             Hf = function(x) diag(p * (p - 1) * x**(p - 2)),
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 1000L, print_pm = TRUE)
+#' opts <- list(sense = "max_precision",
+#'              f = function(x) sum(x**p),
+#'              df = function(x) p * x**(p - 1),
+#'              Hf = function(x) diag(p * (p - 1) * x**(p - 2)),
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 1000L, print_pm = TRUE)
 #'
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
@@ -583,13 +583,13 @@
 #' D <- matrix(1, nrow = 1, ncol = length(Nh)) # objective cost components
 #' d <- as.vector(0)                           # vector of possible fixed cost
 #'
-#' opts = list(sense = "min_cost", # Sense of optimization is survey cost
-#'             f = NULL,
-#'             df = NULL,
-#'             Hf = NULL,
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = TRUE)
+#' opts <- list(sense = "min_cost", # Sense of optimization is survey cost
+#'              f = NULL,
+#'              df = NULL,
+#'              Hf = NULL,
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = TRUE)
 #'
 #' sol <- mosalloc(D = D, d = d, A = A, a = a, l = l, u = u, opts = opts)
 #'
@@ -613,17 +613,17 @@
 #' pop <- data.frame(value = rnorm(100, 100, 35),
 #'                   cluster = sample(1:4, 100, replace = TRUE))
 #'
-#' CI <- 36  # Sampling cost per PSU/cluster
+#' CI <- 36  # Sampling cost per PSU
 #' CII <- 10 # Average sampling cost per SSU
 #'
-#' NI <- 4                   # Number of PSUs/clusters
+#' NI <- 4                   # Number of PSUs
 #' NII <- table(pop$cluster) # PSU/cluster sizes
 #'
-#' S2I <- var(by(pop$value, pop$cluster, sum)) # between cluster variance
-#' S2II <- by(pop$value, pop$cluster, var)     # within cluster variances
+#' S2I <- var(by(pop$value, pop$cluster, sum)) # between PSU variance
+#' S2II <- by(pop$value, pop$cluster, var)     # within PSU variances
 #'
 #' D <- matrix(c(NI**2 * S2I - NI * sum(NII * S2II), NI * NII**2 * S2II), 1)
-#' d <- as.vector(NI * S2I)
+#' d <- as.vector(D %*% (1 / c(NI, NI * NII))) # = NI * S2I
 #'
 #' C <- cbind(c(CI, rep(2, NI), -NII),
 #'            rbind(rep(CII / NI, 4), -diag(4), diag(4)))
@@ -632,13 +632,13 @@
 #' l <- c(2, rep(4, 4))
 #' u <- c(NI, NI * NII)
 #'
-#' opts = list(sense = "max_precision",
-#'             f = NULL,
-#'             df = NULL,
-#'             Hf = NULL,
-#'             init_w = 1,
-#'             mc_cores = 1L, pm_tol = 1e-05,
-#'             max_iters = 100L, print_pm = TRUE)
+#' opts <- list(sense = "max_precision",
+#'              f = NULL,
+#'              df = NULL,
+#'              Hf = NULL,
+#'              init_w = 1,
+#'              mc_cores = 1L, pm_tol = 1e-05,
+#'              max_iters = 100L, print_pm = TRUE)
 #'
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
@@ -825,9 +825,9 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
   # scale input data and built problem matrix
   #-----------------------------------------------------------------------------
   if (opts$sense == "max_precision") {
-    if (any(as.vector(D %*% (1 / u)) - d < 0) & any(
-      rowSums(D / rep(u, each = dim(D)[1])) - d < 0))  {
-        stop("d is not an utopian vector! d is too large.")
+    if (Q > 1 & any(as.vector(D %*% (1 / u)) / d - 1 < -1e8
+        ) & any(rowSums(D / rep(u, each = dim(D)[1])) / d - 1 < -1e8))  {
+      stop("d is not an utopian vector! d is too large. Try: d <- D %*% (1 / u)")
     }
 
     ecos_control <- ECOSolveR::ecos.control(

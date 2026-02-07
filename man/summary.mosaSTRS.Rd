@@ -23,7 +23,7 @@ containing the following components:
 \code{$vname} Name of \code{object}.
 
 \code{$sense}
-Sense of optimzation; \code{max precision} or \code{min_cost}.
+Sense of optimization; \code{max precision} or \code{min_cost}.
 
 \code{$method}
 The method used weighted sum scalarization (WSS) or weighted Chebyshev

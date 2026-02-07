@@ -6,8 +6,8 @@
 #         (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com 
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com 
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 

@@ -7,8 +7,8 @@
 # Licensing: GPL-3.0-or-later
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 #
@@ -41,7 +41,7 @@
 #' @returns \code{$D} (type: \code{matrix}): the cost coefficient matrix for
 #' cost objectives and
 #' @returns \code{$d} (type: \code{vector}): the vector of fixed costs
-#' \cr useable as input to the multiobjective allocation function
+#' \cr usable as input to the multiobjective allocation function
 #' \code{mosalloc()}.
 #'
 #' @examples

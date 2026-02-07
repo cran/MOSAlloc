@@ -20,7 +20,7 @@ A vector of stratum sizes.}
 
 \item{list}{(type: \code{list})
 A list of lists taking subpopulation- (domain/area) specific arguments.
-Elements are lists containing the following components which inturn
+Elements are lists containing the following components which in turn
 correspond to one specific precision restriction:
 \cr \code{..$stratum_id} (type: \code{numeric})
 A vector containing the indices of the strata considered for the current
@@ -47,7 +47,7 @@ quality restrictions and
 
 \code{a} (type: \code{vector}) a precision vector for the
 corresponding right-hand side
-\cr useable as input to the multiobjective allocation function
+\cr usable as input to the multiobjective allocation function
 \code{mosalloc()}.
 }
 \description{

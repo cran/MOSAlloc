@@ -30,7 +30,7 @@ The objective vector. A vector of either fixed precision components
 A matrix of precision units for precision constraints.}
 
 \item{a}{(type: vector)
-The right-hand side vector ofthe precision constraints.}
+The right-hand side vector of the precision constraints.}
 
 \item{C}{(type: matrix)
 A matrix of cost coefficients for cost constraints}
@@ -66,15 +66,15 @@ containing the following components:
 \code{$J} The optimal objective vector.
 
 \code{$Objective} The objective value with respect to decision
-funtional f. \code{NULL} if \code{opts$f = NULL}.
+functional f. \code{NULL} if \code{opts$f = NULL}.
 
-\code{$Utopian} Always \code{NULL} (consitency to \code{mosalloc()}
+\code{$Utopian} Always \code{NULL} (consistency to \code{mosalloc()}
 output). \code{NULL} if \code{opts$f = NULL}.
 
 \code{$Normal} The vector normal to the Pareto frontier at
 \code{$J}.
 
-\code{$dfJ} Always \code{NULL} (consitency to \code{mosalloc()}
+\code{$dfJ} Always \code{NULL} (consistency to \code{mosalloc()}
 output).
 
 \code{$Sensitivity} The dual variables of the objectives and
@@ -94,7 +94,7 @@ constraints.
 
 \code{$Timing} Run time info.
 
-\code{$Iteration} Always \code{NULL} (consitency to
+\code{$Iteration} Always \code{NULL} (consistency to
 \code{mosalloc()} output).
 }
 \description{

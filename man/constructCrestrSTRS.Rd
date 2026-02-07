@@ -12,7 +12,7 @@ The number of strata.}
 
 \item{list}{(type: \code{list})
 A list of lists taking subpopulation- (domain/area) specific arguments.
-lements are lists containing the following components which correspond
+Elements are lists containing the following components which correspond
 to one specific cost restriction:
 \cr \code{..$stratum_id} (type: \code{numeric})
 A vector containing the indices of the strata considered for the current
@@ -37,7 +37,7 @@ restrictions and
 
 c (type: \code{vector}): a cost vector for the corresponding
 right-hand side
-\cr useable as input to the multiobjective allocation function
+\cr usable as input to the multiobjective allocation function
 \code{mosalloc()}.
 }
 \description{

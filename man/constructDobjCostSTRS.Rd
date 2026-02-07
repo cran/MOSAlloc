@@ -35,7 +35,7 @@ The function \code{constructDobjCostSTRS()} returns a list containing
 cost objectives and
 
 \code{$d} (type: \code{vector}): the vector of fixed costs
-\cr useable as input to the multiobjective allocation function
+\cr usable as input to the multiobjective allocation function
 \code{mosalloc()}.
 }
 \description{

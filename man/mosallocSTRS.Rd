@@ -62,7 +62,7 @@ The name of the subpopulation (domain/area).}
 \item{listA}{(type: \code{list})
 A list of lists taking subpopulation- (domain/area) specific
 arguments. Elements are lists containing the following components
-which inturn correspond to one specific precision restriction:
+which in turn correspond to one specific precision restriction:
 \cr \code{..$stratum_id} (type: \code{numeric}) A vector containing the
 indices of the strata considered for the current restriction. The indices
 must coincide with the corresponding row numbers of \code{X_var} and
@@ -150,7 +150,7 @@ is required in the case of cost minimization (opt$sense == "min_cost").}
 \item{X_fixed}{(type: \code{matrix})
 A matrix containing stratum- (rows) and type- (columns) specific
 cost coefficients associated with fixed cost. Default is \code{NULL}.
-Used soley in the case of cost minimization (\code{opt$sense == "min_cost"}).}
+Used solely in the case of cost minimization (\code{opt$sense == "min_cost"}).}
 }
 \value{
 A \code{mosaSTRS} object or a list of \code{mosaSTRS}
@@ -158,7 +158,7 @@ objects. A \code{mosaSTRS} object is a list containing the
 following components:
 
 \code{$sense}
-Sense of optimzation; \code{max precision} or \code{min_cost}.
+Sense of optimization; \code{max precision} or \code{min_cost}.
 
 \code{$method}
 The method used, either weighted sum scalarization (WSS) or weighted

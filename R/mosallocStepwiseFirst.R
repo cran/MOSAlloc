@@ -7,8 +7,8 @@
 # Licensing: GPL-3.0-or-later
 #
 # Please report any bugs or unexpected behavior to
-# mail.willemsf+MOSAlloc_1.2.3@gmail.com 
-# (mail[DOT]willemsf+MOSAlloc_1.2.3[AT]gmail[DOT]com)
+# mail.willemsf+MOSAlloc@gmail.com 
+# (mail[DOT]willemsf+MOSAlloc[AT]gmail[DOT]com)
 #
 #---------------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@
 #' @param A (type: matrix)
 #' A matrix of precision units for precision constraints.
 #' @param a (type: vector)
-#' The right-hand side vector ofthe precision constraints.
+#' The right-hand side vector of the precision constraints.
 #' @param C (type: matrix)
 #' A matrix of cost coefficients for cost constraints
 #' @param c (type: vector)
@@ -65,12 +65,12 @@
 #' @returns \code{$n} The vector of optimal sample sizes.
 #' @returns \code{$J} The optimal objective vector.
 #' @returns \code{$Objective} The objective value with respect to decision
-#' funtional f. \code{NULL} if \code{opts$f = NULL}.
-#' @returns \code{$Utopian} Always \code{NULL} (consitency to \code{mosalloc()}
+#' functional f. \code{NULL} if \code{opts$f = NULL}.
+#' @returns \code{$Utopian} Always \code{NULL} (consistency to \code{mosalloc()}
 #' output). \code{NULL} if \code{opts$f = NULL}.
 #' @returns \code{$Normal} The vector normal to the Pareto frontier at
 #' \code{$J}.
-#' @returns \code{$dfJ} Always \code{NULL} (consitency to \code{mosalloc()}
+#' @returns \code{$dfJ} Always \code{NULL} (consistency to \code{mosalloc()}
 #' output).
 #' @returns \code{$Sensitivity} The dual variables of the objectives and
 #' constraints.
@@ -83,7 +83,7 @@
 #' \cr \code{...$Ecoredcodes} The redcodes of \code{ECOSolveR::ECOS_csolve()}.
 #' \cr \code{...$Ecosummary} Problem summary of \code{ECOSolveR::ECOS_csolve()}.
 #' @returns \code{$Timing} Run time info.
-#' @returns \code{$Iteration} Always \code{NULL} (consitency to
+#' @returns \code{$Iteration} Always \code{NULL} (consistency to
 #' \code{mosalloc()} output).
 #'
 #' @examples
