@@ -623,7 +623,7 @@
 #' S2II <- by(pop$value, pop$cluster, var)     # within PSU variances
 #'
 #' D <- matrix(c(NI**2 * S2I - NI * sum(NII * S2II), NI * NII**2 * S2II), 1)
-#' d <- as.vector(D %*% (1 / c(NI, NI * NII))) # = NI * S2I
+#' d <- as.vector(NI * S2I) # = D %*% (1 / c(NI, NI * NII))
 #'
 #' C <- cbind(c(CI, rep(2, NI), -NII),
 #'            rbind(rep(CII / NI, 4), -diag(4), diag(4)))
@@ -825,8 +825,8 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
   # scale input data and built problem matrix
   #-----------------------------------------------------------------------------
   if (opts$sense == "max_precision") {
-    if (Q > 1 & any(as.vector(D %*% (1 / u)) / d - 1 < -1e8
-        ) & any(rowSums(D / rep(u, each = dim(D)[1])) / d - 1 < -1e8))  {
+    if (Q > 1 & any(as.vector(D %*% (1 / (u - 1e-5))) - d < 0
+        ) & any(rowSums(D / rep(u - 1e-5, each = dim(D)[1])) - d < 0))  {
       stop("d is not an utopian vector! d is too large. Try: d <- D %*% (1 / u)")
     }
 

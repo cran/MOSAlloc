@@ -1,5 +1,15 @@
 # Changelog
 
+## MOSAlloc (development version) 1.2.4.9000
+
+### News
+- Added installation instructions to `README.md`.
+
+### Bug fixes
+- Correct tolerance calculations to align with sampling theory
+
+---
+
 ## MOSAlloc 1.2.4
 
 ### News

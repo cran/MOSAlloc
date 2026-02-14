@@ -623,7 +623,7 @@ S2I <- var(by(pop$value, pop$cluster, sum)) # between PSU variance
 S2II <- by(pop$value, pop$cluster, var)     # within PSU variances
 
 D <- matrix(c(NI**2 * S2I - NI * sum(NII * S2II), NI * NII**2 * S2II), 1)
-d <- as.vector(D \%*\% (1 / c(NI, NI * NII))) # = NI * S2I
+d <- as.vector(NI * S2I) # = D \%*\% (1 / c(NI, NI * NII))
 
 C <- cbind(c(CI, rep(2, NI), -NII),
            rbind(rep(CII / NI, 4), -diag(4), diag(4)))

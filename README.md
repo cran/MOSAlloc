@@ -8,7 +8,13 @@ MOSAlloc provides a framework for multipurpose optimal resource allocation in su
 
 ## Installation
 
-You can install the development version of MOSAlloc from GitLab using the `remotes` package:
+Install the latest CRAN version of MOSAlloc by entering the following in R:
+
+``` r
+install.packages("MOSAlloc")
+```
+
+You can install MOSAlloc (development version) from GitLab using the `remotes` package:
 
 ``` r
 # install.packages("remotes")
@@ -30,8 +36,7 @@ This package is licensed under the GNU General Public License, version 3 or late
 
 ## Author / Maintainer
 
-**Felix Willems**, Trier University
-Email: willemsf@uni-trier.de
+**Felix Willems**, Trier University, Email: willemsf@uni-trier.de
 
 Maintainer: Felix Willems <mail.willemsf+MOSAlloc@gmail.com>  
 

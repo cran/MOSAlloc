@@ -1,6 +1,6 @@
 Package: MOSAlloc
 Title: Constraint Multiobjective Sample Allocation
-Version: 1.2.4
+Version: 1.2.5
 Authors@R: 
     c(person(given = "Felix",
            family = "Willems",
@@ -32,11 +32,11 @@ RoxygenNote: 7.3.3
 Imports: ECOSolveR, Matrix
 Suggests: parallel, testthat (>= 3.0.0)
 NeedsCompilation: no
-Packaged: 2026-02-06 21:13:03 UTC; willemsf
+Packaged: 2026-02-13 23:10:29 UTC; willemsf
 Maintainer: Felix Willems <mail.willemsf+MOSAlloc@gmail.com>
 Config/testthat/edition: 3
 Author: Felix Willems [aut, cre] (ORCID:
     <https://orcid.org/0009-0005-2987-5825>),
   Ralf Münnich [ths] (ORCID: <https://orcid.org/0000-0001-8285-5667>)
 Repository: CRAN
-Date/Publication: 2026-02-07 08:10:08 UTC
+Date/Publication: 2026-02-14 14:40:41 UTC

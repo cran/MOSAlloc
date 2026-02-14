@@ -270,7 +270,7 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
       if (!is.vector(c)) {
         stop("c is not a vector!")
       } else {
-        if(nrow(C) != length(c)){
+        if (nrow(C) != length(c)){
           stop("Dimension of C and c do not match!")
         }
       }
@@ -338,10 +338,11 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
   # scale input data and built problem matrix
   #-----------------------------------------------------------------------------
   if (opts$sense == "max_precision") {
-    if (any(as.vector(D %*% (1 / u)) - d < 0) & any(
-      rowSums(D / rep(u, each=dim(D)[1])) - d < 0)) {
-        stop("d is not an utopian vector! d is too large.")
+    if (Q > 1 & any(as.vector(D %*% (1 / (u - 1e-5))) - d < 0
+        ) & any(rowSums(D / rep(u - 1e-5, each = dim(D)[1])) - d < 0))  {
+      stop("d is not an utopian vector! d is too large. Try: d <- D %*% (1 / u)")
     }
+
 
     ecos_control <- ECOSolveR::ecos.control(
       maxit = as.integer(max(floor(log(ncol(D))**1.5) + 1, 35,
