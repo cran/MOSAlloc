@@ -206,9 +206,9 @@
 #' \eqn{Dz-d = w^{-1}t} (\code{Dbounds}). Uniqueness can be ensured via a
 #' stepwise procedure implemented in \code{mosallocStepwiseFirst()}.\cr
 #'
-#' **Precision optimization** *(\code{opts$sense == "max_precision"},
-#' \code{opts$f ==}\eqn{f}, \code{opts$f ==} \eqn{\nabla f},
-#' \code{opts$f ==} \eqn{Hf})*
+#' **Precision optimization with nonlinear decision functional**
+#' *(\code{opts$sense == "max_precision"}, \code{opts$f ==}\eqn{f},
+#' \code{opts$f ==} \eqn{\nabla f}, \code{opts$f ==} \eqn{Hf})*
 #'
 #' The mathematical problem solved is
 #' \deqn{\min_{n, z}\{f(Dz-d): Az\leq a, Cn\leq c,
@@ -233,6 +233,42 @@
 #' \deqn{\min_{n, z, t}\{t: Dn-d\leq\textbf{1}t, Az\leq a, 1\leq n_iz_i\,
 #' \forall i\}} where \eqn{D^\top} is a vector of stratum-specific sampling
 #' cost and \eqn{d} some fixed cost.
+#'
+#' **Numerical caution: extreme heterogeneity**
+#'
+#' In optimal allocation problems, the components of \eqn{D} determine how much
+#' each stratum contributes to the objective function. When the entries of
+#' \eqn{D} vary by several orders of magnitude, the problem may become
+#' numerically ill-conditioned. In such cases, a small number of strata can
+#' dominate the objective, while other strata have only a minor influence on
+#' the solution.
+#'
+#' Under an inequality constraint such as \eqn{\sum_h n_h \le n_{\max}}, the
+#' optimizer may return solutions where the constraint is not tight due to
+#' solver tolerances. This can occur when additional sample size do not lead
+#' to a numerically meaningful improvement in the objective, given the solver
+#' tolerances.
+#'
+#' If an exact overall sample size is
+#' required, it may be preferable to formulate the sample-size restriction as
+#' an equality constraint represented by two inequalities, i.e.
+#' \deqn{
+#' C =
+#' \begin{pmatrix}
+#' 1 & \cdots & 1 \\
+#' -1 & \cdots & -1
+#' \end{pmatrix},
+#' \qquad
+#' c =
+#' \begin{pmatrix}
+#' n_{\max} \\
+#' -n_{\max}
+#' \end{pmatrix}.
+#' }
+#' This formulation removes the possibility of slack in the total sample size
+#' constraint. In problems with extreme heterogeneity, this can help avoid
+#' degenerate allocations where only a subset of strata effectively drives the
+#' solution. See Example 10 for an illustration.
 #'
 #' @return \code{mosalloc()} returns a list containing the following
 #' components:
@@ -336,7 +372,7 @@
 #' # research credit, and the number of businesses with offshore affiliates
 #' # subject to cost restrictions
 #'
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #' C <- rbind(ch, ch * c(-1, -1, -1, 0, 0))
 #' c <- c(budget, - 0.5 * budget)
@@ -360,10 +396,10 @@
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
 #' # Obtain optimal objective value
-#' sol$J # [1] 0.0017058896 0.0004396972 0.0006428475 0.0017058896
+#' sol$J # [1] 0.0017058896 0.0004396972 0.0006428474 0.0017058896
 #'
 #' # Obtain corresponding normal vector
-#' sol$Normal # [1] 6.983113e-01 1.337310e-11 1.596167e-11 3.016887e-01
+#' sol$Normal # [1] 6.983112e-01 1.293135e-11 1.543172e-11 3.016888e-01
 #'
 #' # => Revenue and offshore affiliates are dominating the solution with a
 #' #    ratio of approximately 2:1 (sol$Normal[1] / sol$Normal[4])
@@ -372,7 +408,7 @@
 #' # Example 3: Example 2 with preference weighting
 #'
 #' w <- c(1, 3.85, 3.8, 1.3) # preference weighting
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #' C <- rbind(ch, ch * c(-1, -1, -1, 0, 0))
 #' c <- c(budget, - 0.5 * budget)
@@ -404,7 +440,7 @@
 #'               1.2, 3.5, 4.8, 2.0,
 #'               2.0, 1.0, 1.0, 2.0), 5, 4, byrow = TRUE)
 #' w <- w / w[,1]     # rescale w (ensure the first weighting to be one)
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #' C <- rbind(ch, ch * c(-1, -1, -1, 0, 0))
 #' c <- c(budget, - 0.5 * budget)
@@ -431,7 +467,7 @@
 #' # Example 5: Example 2 where a weighted sum scalarization of the objective
 #' # components is minimized
 #'
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #' C <- matrix(ch, nrow = 1)
 #' c <- budget
@@ -488,7 +524,7 @@
 #' rbind(wss, sol_wcm$Normal / sol_wcm$Normal[1])
 #' #    [,1]      [,2]      [,3]      [,4]
 #' #wss    1 1.0000000 0.5000000 0.5000000
-#' #       1 0.9976722 0.4997552 0.4997462
+#' #       1 0.9976725 0.4997552 0.4997463
 #'
 #' #----------------------------------------------------------------------------
 #' # Example 6: Example 1 with two subpopulations and a p-norm as decision
@@ -523,13 +559,13 @@
 #' sol <- mosalloc(D = D, d = d, C = C, c = c, l = l, u = u, opts = opts)
 #'
 #' c(sol$Normal/sol$dfJ)/mean(c(sol$Normal/sol$dfJ))
-#' # [1] 0.9999972 1.0000028
+#' # [1] 0.9999999 1.0000001
 #'
 #' #----------------------------------------------------------------------------
 #' # Example 7: Example 2 with p-norm as decision functional and only one
 #' # overall cost constraint
 #'
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #' C <- matrix(ch, nrow = 1)
 #' c <- budget
@@ -562,7 +598,7 @@
 #' #----------------------------------------------------------------------------
 #' # Example 8: Minimization of sample sizes subject to precision constraints
 #'
-#' l <- rep(n.min, 5) # minimum sample size ber stratum
+#' l <- rep(n.min, 5) # minimum sample size per stratum
 #' u <- Nh            # maximum sample size per stratum
 #'
 #' # We require at maximum 4.66 % relative standard error for the estimate of 
@@ -648,6 +684,67 @@
 #' # Optimum number of elements to be drawn within clusters
 #' sol$n[-1] / sol$n[1] # [1] 12.16454 11.60828 15.87949 12.80266
 #'
+#' #----------------------------------------------------------------------------
+#' #----------------------------------------------------------------------------
+#' # Example 10 (cf. ''Numerical caution: extreme heterogeneity'' above):
+#' # 15-stratum Neyman-Tschuprow allocation with equal costs
+#' Nh <- c(2,1000,800,1200,950,1100,700,600,500,400,300,200,150,100,50)
+#' Sh <- c(100,0.0001,0.2,0.4,0.5,0.7,1,1.2,1.5,2,2.5,3,4,5,6)
+#' n_max <- sum(Nh) * 0.9 # Maximum overall sample size
+#'
+#' # Neyman-Tschuprow Allocation
+#' nh <- n_max * (Nh * Sh) / sum(Nh * Sh)
+#'
+#' # Specify components for mosalloc()
+#' D <- matrix((Nh * Sh)**2, nrow = 1)
+#' d <- as.vector(D %*% (1 / Nh))
+#' A <- NULL
+#' a <- NULL
+#' C1 <- matrix(1, nrow = 1, ncol = ncol(D))
+#' c1 <- n_max
+#' l <- rep(1, length(Nh))
+#' u <- Nh
+#' opts <- list(sense = "max_precision", f = NULL, df = NULL, Hf = NULL,
+#'              init_w = 1, mc_cores = 1L, pm_tol = 1e-05, max_iters = 100L,
+#'              print_pm = FALSE)
+#'
+#' # Solve the problem with inequality cost constraint
+#' res1 <- mosalloc(D, d, A, a, C1, c1, l, u, opts)
+#'
+#' # Respecify cost components to enforce equality constraints
+#' C2 <- matrix(c(1, -1), nrow = 2, ncol = ncol(D))
+#' c2 <- c(n_max, -n_max)
+#'
+#' # Solve the problem with explicit equality cost constraint
+#' res2 <- mosalloc(D, d, A, a, C2, c2, l, u, opts)
+#'
+#' # Comparison of results
+#' out <- cbind(nh, res1$n, res2$n, Nh,  (Nh * Sh)**2)
+#' colnames(out) <- c("NT-Allocation", "Inequality", "Equality",
+#'                    "Nh", "(Nh * Sh)^2")
+#' out
+#' #      NT-Allocation Inequality Equality   Nh (Nh * Sh)^2
+#' # [1,]  185.69396933    2.00000      2.0    2    40000.00
+#' # [2,]    0.09284698   56.80793    194.8 1000        0.01
+#' # [3,]  148.55517546  800.00000    800.0  800    25600.00
+#' # [4,]  445.66552639 1200.00000   1200.0 1200   230400.00
+#' # [5,]  441.02317715  950.00000    950.0  950   225625.00
+#' # [6,]  714.92178191 1100.00000   1100.0 1100   592900.00
+#' # [7,]  649.92889265  700.00000    700.0  700   490000.00
+#' # [8,]  668.49828958  600.00000    600.0  600   518400.00
+#' # [9,]  696.35238498  500.00000    500.0  500   562500.00
+#' #[10,]  742.77587731  400.00000    400.0  400   640000.00
+#' #[11,]  696.35238498  300.00000    300.0  300   562500.00
+#' #[12,]  557.08190798  200.00000    200.0  200   360000.00
+#' #[13,]  557.08190798  150.00000    150.0  150   360000.00
+#' #[14,]  464.23492332  100.00000    100.0  100   250000.00
+#' #[15,]  278.54095399   50.00000     50.0   50    90000.00
+#'
+#' colSums(out[,1:3])
+#' # NT-Allocation    Inequality      Equality
+#' #      7246.800      7108.808      7246.800
+#'
+#'
 #' @export
 mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
                      l = 2, u = NULL, opts = list(sense = "max_precision",
@@ -667,6 +764,16 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
   if (nchar(system.file(package = "parallel")) == 0) {
     opts$mc_cores <- 1L
   }
+
+  # fill opts
+  if (!is.list(opts)) {
+    stop("opts is not a list.")
+  }
+  opts_defaults <- list(sense = "max_precision", f = NULL, df = NULL, Hf = NULL,
+                        init_w = 1, mc_cores = 1L, pm_tol = 1e-05,
+                        max_iters = 100L, print_pm = FALSE)
+  missing_opts <- setdiff(names(opts_defaults), names(opts))
+  opts[missing_opts] <- opts_defaults[missing_opts]
 
   # get sense of optimization (precision maximization or cost minimization)
   if (opts$sense == "max_precision") {
@@ -862,12 +969,11 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
       Csc[cbool, ] <- C[cbool, ]
     }
 
-
     # presolve via Neyman-Tschuprow allocation to estimate range of sample sizes
     sDsc    <- sqrt(Dsc)
     sCsc    <- sqrt(abs(Csc[!cbool, , drop = FALSE]))
     neyman  <- colSums(sDsc) / colSums(sCsc) / sum(colSums(sDsc) * colSums(sCsc))
-    scale_n <- pmax(l + 0.1, pmin(neyman, u - 0.5))
+    scale_n <- pmax(l - 0.01, pmin(neyman, u - 0.1))
     ny      <- sum(neyman) / sum(scale_n)
 
     scale_nexp <- scale_n * ny / exp(mean(log((scale_n))))
@@ -880,12 +986,12 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     scale_nz <- exp((log(nscale) + log(zscale)) / 2) / zscale
     scalepar <- scale_nz / scale_nexp
 
+    tsc <-  exp(mean(abs(log(1 / dsc))))
+    scale_t <- exp(mean(log(Dsc %*% (1 / scale_n) - d0))) * tsc
+
     Dsc <- Dsc * rep(scalepar, each = dim(Dsc)[1])
     Asc <- Asc * rep(scalepar, each = dim(Asc)[1])
     Csc <- Csc / rep(scalepar, each = dim(Csc)[1])
-
-    tsc <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (1 / scale_n / scalepar) - d0))) * tsc
 
   } else {
     # respecify precision control for ECOSolveR
@@ -929,7 +1035,7 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     sDsc    <- sqrt(abs(Dsc))
     sAsc    <- sqrt(Asc)
     neyman  <- colSums(sAsc) / colSums(sDsc) / sum(colSums(sAsc) * colSums(sDsc))
-    scale_n <- pmax(l + 0.1, pmin(neyman, u - 0.5))
+    scale_n <- pmax(l - 0.01, pmin(neyman, u - 0.1))
     ny      <- sum(neyman) / sum(scale_n)
 
     scale_nexp <- scale_n * ny / exp(mean(log((scale_n))))
@@ -942,12 +1048,12 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     scale_nz <- exp((log(nscale) + log(zscale)) / 2) / zscale
     scalepar <- scale_nz / scale_nexp
 
+    tsc <-  exp(mean(abs(log(1 / dsc))))
+    scale_t <- exp(mean(log(Dsc %*% scale_n - d0))) * tsc
+
     Dsc <- Dsc / rep(scalepar, each = dim(Dsc)[1])
     Asc <- Asc * rep(scalepar, each = dim(Asc)[1])
     Csc <- Csc / rep(scalepar, each = dim(Csc)[1])
-
-    tsc <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (scale_n / scalepar) - d0))) * tsc
   }
 
   # construct sparse data matrix for large-scale allocation problems
@@ -1004,8 +1110,6 @@ mosalloc <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     Asc <- Asc / rep(scaleadd, each = dim(Asc)[1])
     Csc <- Csc * rep(scaleadd, each = dim(Csc)[1])
     scalepar <- scalepar / scaleadd
-    tsc     <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (scale_n / scalepar) - d0))) * tsc / 10
 
     # construct sparse data matrix
     A_idx <- list(getColRowVal(Dsc, ksense, 0),

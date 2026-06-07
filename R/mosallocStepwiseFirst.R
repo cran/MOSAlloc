@@ -144,7 +144,7 @@
 #' res1 <- mosallocStepwiseFirst(D = D, d = d, C = C, c = c, l = l, u = u,
 #'                               opts = opts)
 #' w <- res1$J[1] / res1$J
-#' w # [1] 1.000000 3.879692 2.653655 1.000000
+#' w # [1] 1.000000 3.879692 2.653657 1.000000
 #'
 #' opts = list(sense = "max_precision",
 #'             init_w = w,
@@ -153,7 +153,7 @@
 #'
 #' res2 <- mosallocStepwiseFirst(D = D, d = d, C = C, c = c, l = l, u = u,
 #'                               opts = opts)
-#' res2$w # [1] 1.000000 3.879692 2.653655 1.000000
+#' res2$w # [1] 1.000000 3.879692 2.653657 1.000000
 #'
 #' # Compare to function mosalloc (without stepwise procedure)
 #' opts = list(sense = "max_precision",
@@ -166,24 +166,24 @@
 #' # Compare objectives
 #' rbind(res1$J, res2$J, res3$J)
 #' #            [,1]         [,2]         [,3]       [,4]
-#' #[1,] 0.00170589 0.0004396972 0.0006428453 0.00170589
-#' #[2,] 0.00170589 0.0004396971 0.0006428420 0.00170589
-#' #[3,] 0.00170589 0.0004396971 0.0006428440 0.00170589
+#' #[1,] 0.00170589 0.0004396972 0.0006428449 0.00170589
+#' #[2,] 0.00170589 0.0004396971 0.0006428418 0.00170589
+#' #[3,] 0.00170589 0.0004396971 0.0006428437 0.00170589
 #'
 #' # Compare optimal sample sizes
 #' rbind(res1$n, res2$n, res3$n)
 #' #          [,1]     [,2]     [,3]     [,4]     [,5]
-#' # [1,] 958.0510 290.7446 147.1789 602.8856 638.2686
-#' # [2,] 958.0455 290.7447 147.1871 602.8847 638.2692
-#' # [3,] 958.0488 290.7446 147.1822 602.8853 638.2688
+#' # [1,] 958.0503 290.7445 147.1801 602.8855 638.2687
+#' # [2,] 958.0452 290.7445 147.1878 602.8847 638.2692
+#' # [3,] 958.0483 290.7444 147.1832 602.8852 638.2689
 #'
 #' @export
 mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
-                                   l = 2, u = NULL,
-                                   opts = list(sense = "max_precision",
-                                               init_w = 1,
-                                               mc_cores = 1L,
-                                               max_iters = 100L)) {
+                                  l = 2, u = NULL,
+                                  opts = list(sense = "max_precision",
+                                              init_w = 1,
+                                              mc_cores = 1L,
+                                              max_iters = 100L)) {
   time_t0 <- proc.time()
 
   # check input
@@ -193,6 +193,15 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
   if (nchar(system.file(package = "parallel")) == 0) {
     opts$mc_cores <- 1L
   }
+
+  # fill opts
+  if (!is.list(opts)) {
+    stop("opts is not a list.")
+  }
+  opts_defaults <- list(sense = "max_precision", init_w = 1, mc_cores = 1L,
+                        max_iters = 100L)
+  missing_opts <- setdiff(names(opts_defaults), names(opts))
+  opts[missing_opts] <- opts_defaults[missing_opts]
 
   # get sense of optimization (precision maximization or cost minimization)
   if (opts$sense == "max_precision") {
@@ -375,7 +384,7 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     sDsc    <- sqrt(Dsc)
     sCsc    <- sqrt(abs(Csc))
     neyman  <- colSums(sDsc)/colSums(sCsc) / sum(colSums(sDsc) * colSums(sCsc))
-    scale_n <- pmax(l + 0.1, pmin(neyman, u - 0.5))
+    scale_n <- pmax(l - 0.01, pmin(neyman, u - 0.1))
     ny      <- sum(neyman) / sum(scale_n)
 
     scale_nexp <- scale_n * ny / exp(mean(log((scale_n))))
@@ -388,12 +397,12 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     scale_nz <- exp((log(nscale) + log(zscale)) / 2) / zscale
     scalepar <- scale_nz / scale_nexp
 
+    tsc <-  exp(mean(abs(log(1 / dsc))))
+    scale_t <- exp(mean(log(Dsc %*% (1 / scale_n) - d0))) * tsc
+
     Dsc <- Dsc * rep(scalepar, each = dim(Dsc)[1])
     Asc <- Asc * rep(scalepar, each = dim(Asc)[1])
     Csc <- Csc / rep(scalepar, each = dim(Csc)[1])
-
-    tsc <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (1 / scale_n / scalepar) - d0))) * tsc
 
   } else {
 
@@ -431,7 +440,7 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     sDsc    <- sqrt(abs(Dsc))
     sAsc    <- sqrt(Asc)
     neyman  <- colSums(sAsc)/colSums(sDsc) / sum(colSums(sAsc) * colSums(sDsc))
-    scale_n <- pmax(l + 0.1, pmin(neyman, u - 0.5))
+    scale_n <- pmax(l - 0.01, pmin(neyman, u - 0.1))
     ny      <- sum(neyman) / sum(scale_n)
 
     scale_nexp <- scale_n * ny / exp(mean(log((scale_n))))
@@ -444,12 +453,12 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     scale_nz <- exp((log(nscale) + log(zscale)) / 2) / zscale
     scalepar <- scale_nz / scale_nexp
 
+    tsc <-  exp(mean(abs(log(1 / dsc))))
+    scale_t <- exp(mean(log(Dsc %*% scale_n - d0))) * tsc
+
     Dsc <- Dsc / rep(scalepar, each = dim(Dsc)[1])
     Asc <- Asc * rep(scalepar, each = dim(Asc)[1])
     Csc <- Csc / rep(scalepar, each = dim(Csc)[1])
-
-    tsc <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (scale_n / scalepar) - d0))) * tsc
   }
 
   # construct sparse data matrix for large-scale problems
@@ -505,8 +514,6 @@ mosallocStepwiseFirst <- function(D, d, A = NULL, a = NULL, C = NULL, c = NULL,
     Asc <- Asc / rep(scaleadd, each = dim(Asc)[1])
     Csc <- Csc * rep(scaleadd, each = dim(Csc)[1])
     scalepar <- scalepar / scaleadd
-    tsc     <-  exp(mean(abs(log(1 / dsc))))
-    scale_t <- exp(mean(log(Dsc %*% (scale_n / scalepar) - d0))) * tsc / 10
 
     # construct sparse data matrix
     A_idx <- list(getColRowVal(Dsc, ksense, 0),

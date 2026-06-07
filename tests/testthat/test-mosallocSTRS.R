@@ -60,6 +60,15 @@ test_that("mosallocSTRS() works as expected for a simple univariate problem", {
   expect_identical(length(summary(resWCM)$objout), 5L)
   expect_identical(summary(resWSS)$method, "WSS")
   expect_identical(summary(resWCM)$method, "WCM")
+
+  # Check output for equality cost bound
+  listC <- list(list(stratum_id = 1:10, c_coef = ch, c_lower = NULL,
+                     c_upper = 100, name = "max_budget"),
+                list(stratum_id = 1:5, c_coef = ch[1:5], c_lower = 50,
+                     c_upper = 50, name = "1_5"))
+  res  <- mosallocSTRS(X_var, X_tot, Nh, listD, NULL, listC,
+                       fpc = TRUE, l, u, opts)
+  expect_identical(nrow(summary(res)$cost), 3L)
 })
 
 test_that("mosallocSTRS() works as expected for a simple multivariate problem", {

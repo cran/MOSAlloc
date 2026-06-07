@@ -15,7 +15,8 @@ mosallocSTRS(
   fpc = TRUE,
   l = 2,
   u = NULL,
-  opts,
+  opts = list(sense = "max_precision", method = "WCM", f = NULL, df = NULL, Hf = NULL,
+    init_w = 1, mc_cores = 1L, pm_tol = 1e-05, max_iters = 100L, print_pm = FALSE),
   ForceOptimality = FALSE,
   X_cost = NULL,
   X_fixed = NULL
@@ -108,9 +109,6 @@ A vector of upper box constraints.}
 The options used by the algorithms:
 \cr \code{$sense} (type: character) Sense of optimization
 (default = \code{"max_precision"}, alternative \code{"min_cost"}).
-\cr \code{$df} (type: function) The gradient of f (default = \code{NULL}).
-\cr \code{$Hf} (type: function)
-The Hesse matrix of f (default = \code{NULL}).
 \cr \code{$method} (type: \code{character})
 A character indicating scalarization method (default = \code{"WCM"},
 alternative \code{"WSS"}), \code{$f} must be \code{NULL}.
@@ -119,6 +117,9 @@ vector (default = \code{NULL}). The weighted Chebyshev minimization
 (\code{WCM}) minimizes for weighted maximum objective component. The
 weighted sum scalarization (\code{WSS}) minimizes for the weighted sum.
 For either case the weights are given by \code{$init_w}.
+\cr \code{$df} (type: function) The gradient of f (default = \code{NULL}).
+\cr \code{$Hf} (type: function)
+The Hesse matrix of f (default = \code{NULL}).
 \cr \code{$init_w} (type: \code{numeric} or \code{matrix})
 Preference weightings (default = 1; The weight for first objective component
 must be 1).

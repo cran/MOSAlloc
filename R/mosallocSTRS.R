@@ -97,9 +97,6 @@
 #' The options used by the algorithms:
 #' \cr \code{$sense} (type: character) Sense of optimization
 #' (default = \code{"max_precision"}, alternative \code{"min_cost"}).
-#' \cr \code{$df} (type: function) The gradient of f (default = \code{NULL}).
-#' \cr \code{$Hf} (type: function)
-#' The Hesse matrix of f (default = \code{NULL}).
 #' \cr \code{$method} (type: \code{character})
 #' A character indicating scalarization method (default = \code{"WCM"},
 #' alternative \code{"WSS"}), \code{$f} must be \code{NULL}.
@@ -108,6 +105,9 @@
 #' (\code{WCM}) minimizes for weighted maximum objective component. The
 #' weighted sum scalarization (\code{WSS}) minimizes for the weighted sum.
 #' For either case the weights are given by \code{$init_w}.
+#' \cr \code{$df} (type: function) The gradient of f (default = \code{NULL}).
+#' \cr \code{$Hf} (type: function)
+#' The Hesse matrix of f (default = \code{NULL}).
 #' \cr \code{$init_w} (type: \code{numeric} or \code{matrix})
 #' Preference weightings (default = 1; The weight for first objective component
 #' must be 1).
@@ -405,11 +405,32 @@
 
 mosallocSTRS <- function(X_var, X_tot, N,
                          listD, listA = NULL, listC = NULL,
-                         fpc = TRUE, l = 2, u = NULL, opts,
+                         fpc = TRUE, l = 2, u = NULL,
+                         opts = list(sense = "max_precision",
+                                     method = "WCM",
+                                     f = NULL,
+                                     df = NULL,
+                                     Hf = NULL,
+                                     init_w = 1,
+                                     mc_cores = 1L,
+                                     pm_tol = 1e-5,
+                                     max_iters = 100L,
+                                     print_pm = FALSE),
                          ForceOptimality = FALSE,
                          X_cost = NULL, X_fixed = NULL) {
 
   message("\n----------------------------------------------------------\n")
+
+  # fill opts
+  if (!is.list(opts)) {
+    stop("opts is not a list.")
+  }
+  opts_defaults <- list(sense = "max_precision", f = NULL, df = NULL, Hf = NULL,
+                        method = "WCM",
+                        init_w = 1, mc_cores = 1L, pm_tol = 1e-05,
+                        max_iters = 100L, print_pm = FALSE)
+  missing_opts <- setdiff(names(opts_defaults), names(opts))
+  opts[missing_opts] <- opts_defaults[missing_opts]
 
   # get number of strata in single-stage stratified random sampling (STRS)
   H <- length(N)
@@ -560,7 +581,7 @@ mosallocSTRS <- function(X_var, X_tot, N,
 
     if (!is.null(Cc$C)) {
       outC <- data.frame(opt_cost = abs(Cc$C %*% sol$n),
-                         bound = sapply(listC, function(L)c(L$c_lower, L$c_upper)),
+                         bound = unlist(lapply(listC, function(L)c(L$c_lower, L$c_upper))),
                          sensitivity = sol$Sensitivity$C)
     } else {
       outC <- NULL
@@ -672,7 +693,7 @@ mosallocSTRS <- function(X_var, X_tot, N,
       
       if (!is.null(Cc)) {
         outC <- data.frame(opt_cost = abs(Cc$C %*% Lsol$n),
-                           bound = sapply(listC, function(L)c(L$c_lower, L$c_upper)),
+                           bound = unlist(lapply(listC, function(L)c(L$c_lower, L$c_upper))),
                            sensitivity = Lsol$Sensitivity$C)
       } else {
         outC <- NULL
